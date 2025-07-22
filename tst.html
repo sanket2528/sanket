@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+  
+  <meta charset="UTF-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Krish's Memories</title>
+
+  
+  
+  <style>
+    body {
+      margin: 0;
+      background: #fce4ec;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      color: #ad1457;
+      margin: 30px 10px 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    td {
+      padding: 10px;
+      border: none;
+    }
+
+    .memory-img {
+      width: 220px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      animation: fadeIn 0.8s forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .heart {
+      position: fixed;
+      color: red;
+      font-size: 20px;
+      animation: floatUp 6s infinite;
+      opacity: 0.8;
+      z-index: 0;
+    }
+
+    @keyframes floatUp {
+      0% { bottom: 0; opacity: 0; transform: translateX(0); }
+      50% { opacity: 1; }
+      100% { bottom: 100%; opacity: 0; transform: translateX(30px); }
+    }
+
+    .footer {
+      font-size: 1rem;
+      color: #555;
+      margin: 40px 0 20px;
+    }
+  </style>
+</head><body>
+<h1>&#128248; All Memories with Krish &#127881;</h1>
+
+<table id="memories-table">
+
+</table>
+
+<div class="footer">Created by Sanket &#10084;&#65039;</div>
+
+<script>
+   
+    const links = [
+      "1xbvupa-Z2rdIr_T0fx25oUTRlQTVPpJZ", "1xkeamOFqEWQVyfHRaXX0xBRY5FvRNIAu",
+      "1yJaMt3oPcehK0s0iyTk091n9I8j4izzs", "1xdeT650RcAWyTBwmtBT5xq0dHKrQB4-s",
+      "1xgMWEc-GacC1kPy3Ef0hGa7rl7SfjuO9", "1xk97DFKbGEVW--UylXF89VKRCpg2DUX5",
+      "1xlIMGeQ3qc-dwXKrYHCWBERDOL1uS4rH", "1xpM1gIOWeCBf_yE5pQIA-mLkUW_m7A9d",
+      "1xtlyzZjkPBs9v8Vu6nwLAorB-JsefgT0", "1xu0nxI7R9nG-e1Zsq58f6zdP__foPWo8",
+      "1y4eS91FevG7ZQGAzXsNKsxyONqxE94uI", "1xWkCswfMVQm6k7ErBXZF6pa9_58Kars-",
+      "1xZkqrQQR9EmyJWvoCOz7ut_71hRiTOQn", "1xuQdsl58LKPFDtNziEkn1R1kJFftnn5I",
+      "1xsoDn2lhC_akuiQnjvFDGha9PVNOqwJa", "1xpquNx1xmfQoEWbwpGxPHemXAphtHFkP",
+      "1xxj-jIqTIGdSd9VrPdJk5y9jeHMEV6Z1", "1yGzfeLsSb3GqyrwtzIzYh6-CHVoQ0An"
+    ];
+
+    const table = document.getElementById('memories-table');
+    let row = document.createElement('tr');
+    let delay = 0;
+
+    links.forEach((id, index) => {
+      const td = document.createElement('td');
+      const img = document.createElement('img');
+      img.src = `https://drive.google.com/thumbnail?id=${id}&sz=w500`;
+      img.className = 'memory-img';
+      img.style.animationDelay = `${delay}s`;
+      delay += 0.15;
+      td.appendChild(img);
+      row.appendChild(td);
+
+      if ((index + 1) % 4 === 0 || index === links.length - 1) {
+        table.appendChild(row);
+        row = document.createElement('tr');
+      }
+    });
+  </script>
+</body></html>
