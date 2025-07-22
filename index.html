@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Happy Birthday!</title><!-- Tailwind CSS CDN -->
+    
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Prevent scrollbars from confetti and balloons/emojis */
+        }
+
+        /* Confetti animation for bomb blast */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ffcf73; /* Yellow default */
+            opacity: 0;
+            border-radius: 50%;
+            animation-timing-function: ease-out;
+            transform-origin: center center;
+        }
+
+        @keyframes blast-fall {
+            0% {
+                transform: translate(0, 0) scale(1) rotateZ(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--end-x), var(--end-y)) scale(0) rotateZ(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Styles for the cake */
+        .cake-layer {
+            background-color: #f7a9b8; /* Pink */
+            border-radius: 15px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            position: relative;
+            margin-bottom: 10px;
+            /* Added transition for cutting effect */
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+        .cake-top {
+            background-color: #f8c3cd; /* Lighter Pink */
+            height: 20px;
+            border-radius: 15px 15px 0 0;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -10px;
+            box-shadow: inset 0 -3px 5px rgba(0,0,0,0.1);
+        }
+        .candle {
+            width: 8px;
+            height: 40px;
+            background-color: #f8e5b4; /* Cream */
+            border-radius: 2px;
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: inset 0 -2px 3px rgba(0,0,0,0.2);
+        }
+        .flame {
+            width: 10px;
+            height: 15px;
+            background-color: #ff9900; /* Orange */
+            border-radius: 50%;
+            position: absolute;
+            top: -55px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: flicker 1.5s infinite alternate;
+        }
+        .flame::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 1px;
+            width: 8px;
+            height: 10px;
+            background-color: #ffdb58; /* Yellow */
+            border-radius: 50%;
+        }
+
+        @keyframes flicker {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+            50% { transform: translateX(-50%) scale(1.05); opacity: 0.9; }
+        }
+
+        .sprinkle {
+            position: absolute;
+            width: 6px;
+            height: 20px;
+            background-color: white;
+            border-radius: 3px;
+            opacity: 0.8;
+            transform: rotate(45deg);
+        }
+
+        /* Balloon animation for card page */
+        .balloon {
+            position: absolute;
+            font-size: 40px; /* Size for emojis */
+            animation-name: ascend;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            transform-origin: center bottom; /* Spin from bottom */
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); /* Little shadow for balloons */
+        }
+
+        @keyframes ascend {
+            0% {
+                transform: translateY(100vh) rotateZ(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotateZ(720deg); /* Go off screen top */
+                opacity: 0;
+            }
+        }
+
+        /* Floating emojis for intro page AND other pages */
+        .floating-emoji {
+            position: absolute;
+            font-size: 30px; /* Base size */
+            animation-name: float-up;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            opacity: 0; /* Start hidden */
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                /* Increased speed: duration from 6-10s to 4-8s */
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+        }
+    </style></head><body class="h-screen w-screen flex items-center justify-center relative">
+
+    <!-- Confetti Container (for bomb blast) -->
+    <div id="confetti-container" class="absolute inset-0 pointer-events-none z-50 overflow-hidden"></div>
+
+    <!-- Balloon Container (for card page) -->
+    <div id="balloon-container" class="absolute inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+
+    <!-- Main Container -->
+    <div id="app" class="relative w-full h-full bg-white shadow-2xl rounded-xl overflow-hidden flex flex-col items-center justify-center">
+
+        <!-- Floating Emoji Container (for all pages) -->
+        <div id="intro-emoji-container" class="absolute inset-0 pointer-events-none z-20 overflow-hidden"></div>
+
+        <!-- Page 1: Introduction -->
+        <div id="intro-page" class="absolute inset-0 bg-gradient-to-br from-pink-300 to-purple-400 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-700 opacity-100 z-10">
+            <!-- Emojis will be dynamically added here to float -->
+
+            <h1 class="text-6xl font-extrabold text-white mb-4 drop-shadow-lg" style="font-family: 'Great Vibes',cursive;">
+                Happy Birthday, Krish (ranni)!
+            </h1>
+            <p class="text-xl text-white mb-8 max-w-sm">
+                It's a special day for you! 🎉 Get ready for some surprises!
+            </p>
+            <button id="start-btn" class="bg-white text-pink-500 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                <span class="text-2xl mr-2">💖</span> Enter Your Day <span class="text-2xl ml-2">🎂</span>
+            </button>
+
+            <p class="absolute bottom-4 text-white text-lg opacity-70">created by sanket <span style="color: rgb(34, 34, 34); font-family: &quot;Segoe UI&quot;,Tahoma,Geneva,Verdana,sans-serif; font-size: 17.6px; font-style: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; white-space: normal; display: inline ! important; float: none;">❤️<span>&nbsp;</span></span> <br>
+</p>
+        </div>
+
+        <!-- Page 2: Cake Cutting -->
+        <div id="cake-page" class="absolute inset-0 bg-gradient-to-br from-purple-400 to-blue-300 flex-col items-center justify-center p-6 text-center hidden transition-opacity duration-700 opacity-0 z-10">
+            <h2 class="text-5xl font-extrabold text-white mb-8 drop-shadow-lg" style="font-family: 'Great Vibes',cursive;">
+                Let's Cut the Cake! 🍰
+            </h2>
+
+            <!-- Cake SVG/Div structure -->
+            <div id="cake" class="relative mb-12 transform scale-90 translate-x-10 cursor-pointer transition-all duration-500">
+                <!-- Bottom Layer -->
+                <div class="cake-layer w-72 h-24 mb-4 relative mx-auto">
+                    <div class="cake-top w-full"></div>
+                    <div class="sprinkle absolute top-4 left-10 bg-orange-300"></div>
+                    <div class="sprinkle absolute top-6 right-12 bg-yellow-300 transform rotate-15"></div>
+                    <div class="sprinkle absolute top-8 left-20 bg-green-300 transform rotate-30"></div>
+                </div>
+                <!-- Middle Layer -->
+                <div class="cake-layer w-56 h-20 mb-4 relative mx-auto -mt-6">
+                    <div class="cake-top w-full"></div>
+                    <div class="sprinkle absolute top-4 left-8 bg-blue-300"></div>
+                    <div class="sprinkle absolute top-2 right-10 bg-red-300 transform -rotate-15"></div>
+                </div>
+                <!-- Top Layer -->
+                <div class="cake-layer w-40 h-16 relative mx-auto -mt-6">
+                    <div class="cake-top w-full"></div>
+                    <div class="sprinkle absolute top-3 left-6 bg-purple-300 transform rotate-20"></div>
+                    <div class="sprinkle absolute top-5 right-8 bg-pink-300"></div>
+                    <!-- Candle and Flame -->
+                    <div class="candle"></div>
+                    <div class="flame"></div>
+                </div>
+            </div>
+
+            <button id="next-surprise-btn" class="bg-pink-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-lg hidden">
+                Next Surprise! →
+            </button>
+
+            <p class="absolute bottom-4 text-white text-lg opacity-70">created by sanket <span style="color: rgb(34, 34, 34); font-family: &quot;Segoe UI&quot;,Tahoma,Geneva,Verdana,sans-serif; font-size: 17.6px; font-style: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; white-space: normal; display: inline ! important; float: none;">❤️<span>&nbsp;</span></span> <br>
+</p>
+        </div>
+
+        <!-- Page 3: Birthday Card -->
+        <div id="card-page" class="absolute inset-0 bg-gradient-to-br from-blue-300 to-teal-200 flex-col items-center justify-center p-6 text-center hidden transition-opacity duration-700 opacity-0 z-10">
+            <!-- Removed Penguin and Guitar Icons -->
+
+            <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full relative z-20 transform -rotate-2 scale-95 hover:scale-100 hover:rotate-0 transition-all duration-500">
+                <h3 class="text-4xl font-extrabold text-pink-500 mb-4" style="font-family: 'Great Vibes',cursive;">
+                    Happy Birthday to you! ❤️
+                </h3>
+                <img src="https://placehold.co/200x150/E0BBE4/FFFFFF?text=Cake" alt="Birthday Cake" class="mx-auto my-4 rounded-lg shadow-md">
+                <p class="text-gray-700 text-lg leading-relaxed mb-6">
+                    Dear Krish (ranni),
+                    <br><br>
+Happy birthday!! I hope your day is filled with lots of love and
+laughter! May all of your birthday wishes come true. <br><br>
+                    With love, <br>sanket (raja)<br>
+
+                    
+                </p>
+            </div>
+
+            <button id="reset-btn" class="mt-8 bg-purple-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                Start Again
+            </button>
+            <a href="hbddrlng.html"><button id="surprise-btn" class="mt-4 bg-yellow-500 text-purple-800 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                🎁 Unlock Special Memories 🎁
+            </button></a>
+
+            <p class="absolute bottom-4 text-white text-lg opacity-70">created by sanket <span style="color: rgb(34, 34, 34); font-family: &quot;Segoe UI&quot;,Tahoma,Geneva,Verdana,sans-serif; font-size: 17.6px; font-style: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; white-space: normal; display: inline ! important; float: none;">❤️<span>&nbsp;</span></span> big thanks to kisu didi ,zeel,kshitij and adi</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Get references to page elements
+        const introPage = document.getElementById('intro-page');
+        const cakePage = document.getElementById('cake-page');
+        const cardPage = document.getElementById('card-page');
+
+        // Get references to buttons
+        const startBtn = document.getElementById('start-btn');
+        const nextSurpriseBtn = document.getElementById('next-surprise-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const surpriseBtn = document.getElementById('surprise-btn');
+
+        const cakeDiv = document.getElementById('cake');
+        const confettiContainer = document.getElementById('confetti-container');
+        const balloonContainer = document.getElementById('balloon-container');
+        const introEmojiContainer = document.getElementById('intro-emoji-container');
+
+        let cakeCut = false;
+
+        function showPage(pageToShow) {
+            const allPages = [introPage, cakePage, cardPage];
+            allPages.forEach(page => {
+                page.classList.add('opacity-0', 'hidden');
+                page.classList.remove('flex');
+            });
+
+            balloonContainer.innerHTML = '';
+            introEmojiContainer.innerHTML = ''; // Clear emojis from the previous page
+
+
+            setTimeout(() => {
+                pageToShow.classList.remove('hidden');
+                pageToShow.classList.add('flex');
+                setTimeout(() => {
+                    pageToShow.classList.remove('opacity-0');
+                    pageToShow.classList.add('opacity-100');
+                }, 50);
+
+                createFloatingEmojis(10); // Create floating emojis for ALL pages
+
+                if (pageToShow === cardPage) {
+                    createBalloons(15);
+                }
+            }, 50);
+        }
+
+        function createConfetti(num, centerX, centerY) {
+            const colors = ['#ffcf73', '#ff7373', '#739bff', '#73ff9c', '#d173ff', '#F8C3CD', '#FFA500'];
+            for (let i = 0; i < num; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+                confetti.style.left = `${centerX}px`;
+                confetti.style.top = `${centerY}px`;
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * Math.max(window.innerWidth, window.innerHeight) * 1.2;
+                const endX = Math.cos(angle) * distance;
+                const endY = Math.sin(angle) * distance;
+
+                confetti.style.setProperty('--end-x', `${endX}px`);
+                confetti.style.setProperty('--end-y', `${endY}px`);
+
+                confetti.style.animationName = 'blast-fall';
+                confetti.style.animationDuration = `${1.5 + Math.random() * 1.5}s`;
+                confetti.style.animationDelay = `${Math.random() * 0.1}s`;
+                confetti.style.transform = `scale(${0.5 + Math.random() * 0.5})`;
+
+                confettiContainer.appendChild(confetti);
+
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
+            }
+        }
+
+        function createBalloons(num) {
+            const emojis = ['🎈', '🥳', '✨', '🎉'];
+            for (let i = 0; i < num; i++) {
+                const balloon = document.createElement('div');
+                balloon.classList.add('balloon');
+                balloon.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                balloon.style.left = `${Math.random() * 90}%`;
+                balloon.style.animationDelay = `${Math.random() * 5}s`;
+                balloon.style.animationDuration = `${8 + Math.random() * 4}s`;
+                balloonContainer.appendChild(balloon);
+            }
+        }
+
+        function createFloatingEmojis(num) {
+            const emojis = ['⭐', '🎁', '💖', '🎂', '🎈', '🌈', '🎉', '🥳', '✨'];
+            for (let i = 0; i < num; i++) {
+                const emoji = document.createElement('div');
+                emoji.classList.add('floating-emoji');
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                emoji.style.left = `${Math.random() * 90}%`;
+                // Increased speed: animationDelay is smaller and animationDuration is smaller
+                emoji.style.animationDelay = `${Math.random() * 1}s`; // From 3s to 1s
+                emoji.style.animationDuration = `${4 + Math.random() * 4}s`; // From 6-10s to 4-8s
+                emoji.style.fontSize = `${20 + Math.random() * 30}px`;
+                introEmojiContainer.appendChild(emoji);
+            }
+        }
+
+        startBtn.addEventListener('click', () => showPage(cakePage));
+
+        cakeDiv.addEventListener('click', (event) => {
+            if (cakeCut) return;
+
+            cakeCut = true;
+
+            const rect = cakeDiv.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            const cakeLayers = document.querySelectorAll('#cake .cake-layer');
+            cakeLayers.forEach((layer, index) => {
+                const offsetX = (Math.random() - 0.5) * 300;
+                const offsetY = (Math.random() - 0.5) * 300;
+                layer.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(0)`;
+                layer.style.opacity = '0';
+            });
+
+            createConfetti(700, centerX, centerY);
+
+            const cakePageHeading = cakePage.querySelector('h2');
+            cakePageHeading.textContent = 'BOOM! Cake Exploded! 🎉';
+
+            setTimeout(() => {
+                nextSurpriseBtn.classList.remove('hidden');
+            }, 700);
+        });
+
+        nextSurpriseBtn.addEventListener('click', () => showPage(cardPage));
+
+        resetBtn.addEventListener('click', () => {
+            showPage(introPage);
+            cakeCut = false;
+            const cakeLayers = document.querySelectorAll('#cake .cake-layer');
+            cakeLayers.forEach(layer => {
+                layer.style.transition = 'none';
+                layer.style.transform = 'none';
+                layer.style.opacity = '1';
+            });
+            setTimeout(() => {
+                 cakeLayers.forEach(layer => {
+                    layer.style.transition = `transform 0.3s ease-out, opacity 0.3s ease-out`;
+                 });
+            }, 10);
+
+            const cakePageHeading = cakePage.querySelector('h2');
+            cakePageHeading.textContent = 'Let\'s Cut the Cake! 🍰';
+            nextSurpriseBtn.classList.add('hidden');
+        });
+
+        surpriseBtn.addEventListener('click', () => {
+            window.open('hbddrlng.html', '_blank');
+        });
+
+        window.onload = () => {
+            showPage(introPage);
+        };
+    </script>
+</body></html>
